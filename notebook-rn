@@ -1,0 +1,18 @@
+1. icon 无法显示或显示为X
+
+yarn add react-native-vector-icons
+添加到andorid 和 ios 项目内
+npx react-native link react-native-vector-icons
+
+
+scrallable-view-tab-bar
+--报RNC-viewpage错误
+yarn add @react-native-community/viewpager
+react-native link @react-native-community/viewpager
+
+--无法点击
+外层组建添加style={{flex: 1}}
+<View sytle={{flex: 1}}>
+</View>
+下划线颜色
+tabBarUnderlineStyle={{backgroundColor: 'black'} }

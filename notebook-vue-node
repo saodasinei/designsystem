@@ -1,0 +1,182 @@
+
+linux 环境搭建
+1.安装 node
+
+通过yum 安装
+加载node源
+curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+安装
+sudo yum -y install nodejs
+
+
+
+安装apt-get: curl https://raw.githubusercontent.com/dvershinin/apt-get-centos/master/apt-get.sh -o /usr/local/bin/apt-get
+安装：node
+安装：nginx
+
+
+2 更新node
+查看版本  node -v
+安装 n模块 npm install -n
+
+n stable  稳定版本
+n lastest  最新版本
+
+
+node + mysql + vue 全栈项目记录
+
+
+1). 环境搭建
+-在项目文件下建两个文件夹目录 - vueclient 和 -server
+-npm install vue-cli //安装vue脚手架
+-初始化vue项目
+  vue init webpack projectname
+-在server文件夹安装express, mysql
+ npm install express
+ npm install mysql
+
+2). 安装UI框架
+//ivew 框架
+npm install view-design --save
+//main.js 引入
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import App from 'components/app.vue';
+import Routers from './router.js';
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
+
+Vue.use(VueRouter);
+Vue.use(ViewUI);
+
+// The routing configuration
+const RouterConfig = {
+    routes: Routers
+};
+const router = new VueRouter(RouterConfig);
+
+new Vue({
+    el: '#app',
+    router: router,
+    render: h => h(App)
+});
+
+
+//element-ui
+
+npm i element-ui -S
+main.js引入
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import App from './App.vue';
+
+Vue.use(ElementUI);
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
+
+
+
+
+
+
+3). 安装axios
+npm install axios --save-dev
+
+
+  //main.js
+import axios from 'axios';
+Vue.prototype.$axios = axios //全局注册，使用方法为:this.$axios
+
+//格式
+this.$axios({
+      method: "post",
+      url: "apiURL", // 接口地址
+      data: {
+        keyword: "1"   // 传接口参数
+      }
+    })
+      .then(response => {
+        console.log(response, "success");   // 成功的返回      
+      })
+      .catch(error => console.log(error, "error")); // 失败的返回
+//设置生产和开发api变量
+1. 修改/config/dev.env.js
+var merge = require('webpack-merge')
+var prodEnv = require('./prod.env')
+
+module.exports = merge(prodEnv, {
+  NODE_ENV: '"development"',　　//添加
+  API_ROOT: '"//192.168.1.8/api"'
+}
+2.修改/config/prod.env.js
+module.exports = {
+  NODE_ENV: '"production"',
+    //添加
+  API_ROOT: '"//www.baidu.com/api"'
+}
+3.调用axios的文件下修改baseUrl
+axios.defaults.baseURL = process.env.API_ROOT
+
+
+
+
+
+4). 配置代理服务器解决跨域问题
+1. config -- index.js
+proxyTable:{
+    '/api/*':{
+         target:'http://localhost:3030',
+         pathRewrite:{
+           '^/api':'/'
+         }
+    },
+},
+
+
+
+
+-在config里边的api.config.js配置
+const isPro = Object.is(process.env.NODE_ENV, 'production')
+
+module.exports = {
+  baseUrl:isPro ? 'http://10.10.10.199/api' :'api/'
+}
+
+dev-server.js
+const webpackConfig = (process.env.NODE_EVN === 'testing' || process.env.NODE_ENV === 'production')?
+  require('./webpack.prod.conf')
+  require('./webpack.dev.conf)
+
+-main.js
+import apiConfig from '../config/api.config'
+
+import Axios from 'axios'
+import VueAxios from 'vue-axios'
+
+Vue.use(VueAxios, Axios)
+Axios.defualts.baseURL = apiConfig.baseUrl
+
+
+
+
+
+
+// vue 项目打包
+
+1. 配置项目目录的config下的index.js
+2. build 模块
+文件中build下的assetsPublicPath, 开发时为：assetsPublicPath:'/'，
+需要打包时，改为assetsPublicPath:'./'
+
+2.注释掉main.js中的mode，开发时为：mode:“history”，而打包上线时注释掉此句
+
+3.配置build目录下的utils.js,打包时添加如下一句：publicPath:’…/…/’
+
+-可以使用 history 模式
+
+-添加服务器根目录时
+在路由添加  base：‘/子目录前缀/’

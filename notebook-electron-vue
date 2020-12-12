@@ -1,0 +1,15 @@
+electron-vue项目配置
+
+1. 如果没有vue-cli的话要全局安装vue-cli
+npm install -g vue-cli
+
+vue init simulatedgreg/electron-vue my-project
+
+
+#安装依赖
+cd my-project
+
+npm install or # yarn install
+npm run dev # yarn run dev
+
+#
